@@ -113,11 +113,14 @@ ar.bind(TemperatureDevice, TEMPERATURE_DEVICE_DISPATCH)
 
 # Describe the resources that are expected by the
 # TemperatureDevice instance.
-def settings_to_args(settings):
+def group_args(settings):
 	group = ar.GroupTable(
 		server=ar.CreateFrame(ar.ListenAtAddress, settings.listening_ipp)
 	)
-	return group, (), {}
+	args = ()
+	kw = {}
+
+	return group, args, kw
 
 # Executable entry point.
 # Create a GroupObject that prepares the resources as described
@@ -125,4 +128,4 @@ def settings_to_args(settings):
 factory_settings = Settings(ar.HostPort('127.0.0.1', 6011))
 
 if __name__ == '__main__':
-	ar.create_object(ar.GroupObject, settings_to_args, TemperatureDevice, factory_settings=factory_settings)
+	ar.create_object(ar.GroupObject, TemperatureDevice, group_args, factory_settings=factory_settings)

@@ -125,7 +125,13 @@ ar.bind(analysis)
 #
 READY_OR_NOT = 120.0
 
-def settings_to_args(settings):
+factory_settings = Settings(temperature_ipp=ar.HostPort(host='127.0.0.1', port=6011),
+	strain_ipp=ar.HostPort(host='127.0.0.1', port=6012),
+	db_ipp=ar.HostPort(host='127.0.0.1', port=6013),
+	name='test',
+	span=30.0)
+
+def group_args(settings):
 	group = ar.GroupTable(
 		temperature=ar.CreateFrame(ar.ConnectToAddress, settings.temperature_ipp),
 		strain=ar.CreateFrame(ar.ConnectToAddress, settings.strain_ipp),
@@ -133,12 +139,5 @@ def settings_to_args(settings):
 	)
 	return group, (settings.name, settings.span), {}
 
-# Initialize settings and start the main object.
-factory_settings = Settings(temperature_ipp=ar.HostPort(host='127.0.0.1', port=6011),
-	strain_ipp=ar.HostPort(host='127.0.0.1', port=6012),
-	db_ipp=ar.HostPort(host='127.0.0.1', port=6013),
-	name='test',
-	span=30.0)
-
 if __name__ == '__main__':
-	ar.create_object(ar.GroupObject, settings_to_args, analysis, get_ready=READY_OR_NOT, factory_settings=factory_settings)
+	ar.create_object(ar.GroupObject, analysis, group_args, get_ready=READY_OR_NOT, factory_settings=factory_settings)

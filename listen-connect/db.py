@@ -26,12 +26,9 @@ This module sets up a network listen at a configured address. Clients connect
 to that address and query the db for context and also store the results of
 monitoring sessions.
 '''
-import random
 import ansar.connect as ar
 from interface.db_if import Settings
 from interface.db_if import OpenFrame, SampleFrame
-
-random.seed()
 
 #
 #
@@ -89,16 +86,19 @@ DB_DISPATCH = {
 ar.bind(Db, DB_DISPATCH)
 
 # Executable entry point.
-# Create a GroupObject that uses settings_to_args() to declare the
+# Create a GroupObject that uses group_args() to declare the
 # resources (i.e. group) that must be ready before the Db instance
 # is created. It also converts settings into arguments.
 factory_settings = Settings(listening_ipp=ar.HostPort('127.0.0.1', 6013))
 
-def settings_to_args(settings):
+def group_args(settings):
 	group = ar.GroupTable(
 		server=ar.CreateFrame(ar.ListenAtAddress, settings.listening_ipp)
 	)
-	return group, (), {}
+	args = ()
+	kw = {}
+
+	return group, args, kw
 
 if __name__ == '__main__':
-	ar.create_object(ar.GroupObject, settings_to_args, Db, factory_settings=factory_settings)
+	ar.create_object(ar.GroupObject, Db, group_args, factory_settings=factory_settings)

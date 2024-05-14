@@ -41,10 +41,10 @@ SPEC := $(EXECUTABLES:%=%.spec)
 # Default rule to turn a python script into an executable.
 #
 dist/% : %.py
-	pyinstaller --onefile --log-level ERROR -p . $<
+	pyinstaller --onefile --hidden-import=_cffi_backend --log-level ERROR -p . $<
 
 dist/ansar-group:
-	pyinstaller --onefile --log-level ERROR -p . `which ansar-group`
+	pyinstaller --onefile --hidden-import=_cffi_backend --log-level ERROR -p . `which ansar-group`
 
 clean::
 	-rm -rf build dist $(SPEC)

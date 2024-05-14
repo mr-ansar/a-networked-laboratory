@@ -117,15 +117,18 @@ ar.bind(StrainDevice, STRAIN_DEVICE_DISPATCH)
 
 #
 #
-def settings_to_args(settings):
+def group_args(settings):
 	group = ar.GroupTable(
 		server=ar.CreateFrame(ar.ListenAtAddress, settings.listening_ipp)
 	)
-	return group, (), {}
+	args = ()
+	kw = {}
+
+	return group, args, kw
 
 #
 #
 factory_settings = Settings(listening_ipp=ar.HostPort('127.0.0.1', 6012))
 
 if __name__ == '__main__':
-	ar.create_object(ar.GroupObject, settings_to_args, StrainDevice, factory_settings=factory_settings)
+	ar.create_object(ar.GroupObject, StrainDevice, group_args, factory_settings=factory_settings)
