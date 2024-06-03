@@ -1,4 +1,4 @@
-# Author: Scott Woods <scott.18.ansar@gmail.com.com>
+# Author: Scott Woods <scott.18.ansar@gmail.com>
 # MIT License
 #
 # Copyright (c) 2017-2024 Scott Woods
@@ -35,7 +35,7 @@ def temperature_device(self):
 	metric = 'temperature'
 	style = 'polled'
 	unique = uuid.uuid4()
-	name = f'device-{metric}-{style}-{unique}'
+	name = f'device-{metric}-{style}+{unique}'
 
 	ar.publish(self, name)
 	m = self.select(ar.Published, ar.NotPublished, ar.Stop)

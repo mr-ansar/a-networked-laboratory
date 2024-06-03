@@ -1,4 +1,4 @@
-# Author: Scott Woods <scott.18.ansar@gmail.com.com>
+# Author: Scott Woods <scott.18.ansar@gmail.com>
 # MIT License
 #
 # Copyright (c) 2017-2024 Scott Woods
@@ -34,7 +34,7 @@ def strain_device(self):
 	metric = 'strain'
 	style = 'async'
 	unique = uuid.uuid4()
-	name = f'device-{metric}-{style}-{unique}'
+	name = f'device-{metric}-{style}+{unique}'
 
 	delivered = {}		# Remember clients.
 

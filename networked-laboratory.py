@@ -1,4 +1,4 @@
-# Author: Scott Woods <scott.18.ansar@gmail.com.com>
+# Author: Scott Woods <scott.18.ansar@gmail.com>
 # MIT License
 #
 # Copyright (c) 2017-2024 Scott Woods
@@ -25,14 +25,13 @@
 .
 '''
 import ansar.connect as ar
-from db_if import *
 from temperature_if import *
 from strain_if import *
 
 #
 #
 def networked_laboratory(self):
-	device_search = r'device-[a-zA-Z]+-[a-zA-Z]+-.*'
+	device_search = r'device-[a-zA-Z]+-[a-zA-Z]+\+.*'
 
 	ar.subscribe(self, device_search)
 	m = self.select(ar.Subscribed, ar.Stop)
@@ -42,7 +41,11 @@ def networked_laboratory(self):
 	polled = {}
 	self.start(ar.T1, 2.0, repeating=True)
 	while True:
-		m = self.select(ar.T1, TemperatureSample, StrainEdge, ar.Available, ar.Cleared, ar.Dropped, ar.Stop)
+		m = self.select(ar.T1,
+			TemperatureSample, StrainEdge,
+			ar.Available,
+			ar.Cleared, ar.Dropped,
+			ar.Stop)
 		if isinstance(m, ar.T1):
 			for a in polled.keys():
 				self.send(ar.Enquiry(), a)
@@ -52,9 +55,11 @@ def networked_laboratory(self):
 		elif isinstance(m, (ar.Cleared, ar.Dropped)):
 			polled.pop(self.return_address, None)
 		elif isinstance(m, TemperatureSample):
-			self.sample(temperature=m.temperature)
+			device = self.return_address[-1]
+			self.sample(temperature=m.temperature, device=device)
 		elif isinstance(m, StrainEdge):
-			self.sample(strain=m.strain)
+			device = self.return_address[-1]
+			self.sample(strain=m.strain, device=device)
 		else:
 			ar.retract(self)
 			return ar.Aborted()

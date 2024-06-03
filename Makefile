@@ -1,4 +1,4 @@
-# Author: Scott Woods <scott.18.ansar@gmail.com.com>
+# Author: Scott Woods <scott.18.ansar@gmail.com>
 # MIT License
 #
 # Copyright (c) 2022
@@ -20,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+NUMBER_OF_DEVICES?=8
 
 # Generate useful lists of build artefacts.
 EXECUTABLES := networked-laboratory strain_device temperature_device ansar-group
@@ -52,15 +53,32 @@ $(ANSAR): build
 	ansar create
 	ansar deploy dist
 
-home: $(ANSAR)
-	ansar add strain_device --count=20
-	ansar add temperature_device --count=20
+laboratory: $(ANSAR)
 	ansar add networked-laboratory laboratory
-	ansar network --connect-scope=GROUP --to-scope=HOST --product-name='Ansar Networking' --product-instance=TESTING
-	ansar network client --connect-scope=GROUP --to-scope=HOST --product-name='Ansar Networking' --product-instance=TESTING
+	ansar network --connect-scope=GROUP --to-scope=HOST
+	ansar network --connect-scope=HOST --to-scope=LAN
 
-run:
-	ansar --debug-level=DEBUG run
+start-laboratory:
+	ansar start laboratory
+
+stop-laboratory:
+	ansar stop default
+
+devices: $(ANSAR)
+	ansar add strain_device --count=$(NUMBER_OF_DEVICES)
+	ansar add temperature_device --count=$(NUMBER_OF_DEVICES)
+	ansar network devices --connect-scope=GROUP --to-scope=HOST
+	ansar network devices --connect-scope=HOST --to-scope=LAN
+
+remote-devices: $(ANSAR)
+	ansar add strain_device --count=$(NUMBER_OF_DEVICES)
+	ansar add temperature_device --count=$(NUMBER_OF_DEVICES)
+
+start-devices:
+	ansar start '(strain|temperature)_.*' --group-name=devices
+
+stop-devices: $(ANSAR)
+	ansar stop devices
 
 clean:: clean-build
 	-ansar -f destroy
